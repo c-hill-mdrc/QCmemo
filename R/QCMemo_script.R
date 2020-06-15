@@ -1,12 +1,5 @@
 # LOAD REQUIRED LIBRARIES (INSTALL IF NOT ALREADY)
 
-# package_list <- c('usethis')
-# new_packages <- package_list[!(package_list %in% installed.packages()[,"Package"])]
-# if(length(new_packages)) {
-#   install.packages(new_packages, repos = "http://cran.us.r-project.org")
-# }
-# library(usethis)
-
 #' @import usethis
 
 usethis::use_package('usethis')
@@ -20,7 +13,6 @@ usethis::use_package('odbc')
 usethis::use_package('readxl')
 usethis::use_package('stats')
 
-
 #' @import tidyr
 #' @import dplyr
 #' @import flextable
@@ -32,7 +24,6 @@ usethis::use_package('stats')
 #' @importFrom stats ftable reshape
 
 con <- dbConnect(RSQLite::SQLite(), dbname = ':memory:')
-
 
 # LOAD CUSTOM FUNCTIONS
 
@@ -134,7 +125,10 @@ loadSASdf <- function(rootdir, dirabb = 'SD7', suffix = '', s1dat, s1names = NUL
   rootdir <- fixFilepath(rootdir)
 
   ns1dat <- length(s1dat)
-  ns2dat <- length(s2dat)
+
+  if (!is.null(s2dat)) {
+    ns2dat <- length(s2dat)
+  }
 
   if (is.null(s1names)) {
     s1names <- paste0('s1_', seq(1, length(s1dat), 1))
@@ -154,12 +148,20 @@ loadSASdf <- function(rootdir, dirabb = 'SD7', suffix = '', s1dat, s1names = NUL
     dflist[[i]] <- eval(parse(text = s1names[i]))
   }
 
-  for (j in 1:length(s2dat)) {
-    assign(s2names[j], read_sas(paste0(rootdir, dirabb, gsub('.', suffix, s2dat[j], fixed = TRUE))))
-    dflist[[i+j]] <- eval(parse(text = s2names[j]))
+  if (!is.null(s2dat)) {
+    for (j in 1:length(s2dat)) {
+      assign(s2names[j], read_sas(paste0(rootdir, dirabb, gsub('.', suffix, s2dat[j], fixed = TRUE))))
+      dflist[[i+j]] <- eval(parse(text = s2names[j]))
+    }
   }
 
-  names(dflist) <- c(s1names, s2names)
+  if (!is.null(s2dat)) {
+    names(dflist) <- c(s1names, s2names)
+  }
+  else {
+    names(dflist) <- c(s1names)
+  }
+
   return(dflist)
 }
 
