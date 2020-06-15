@@ -1,0 +1,26 @@
+Package: QCmemo
+Type: Package
+Title: PSE QC Memo Helper Functions
+Version: 0.1.0
+Authors@R: person("Colin", "Hill", email = "colin.hill@mdrc.org",
+    role = c("aut", "cre"))
+Maintainer: Colin Hill <colin.hill@mdrc.org>
+Description: This package loads required libraries and custom functions to
+    help the user generate a QC memo in RMarkdown. This package was designed to 
+    be used with the QC Memo template, but the functions may be useful in other
+    settings as well. 
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Imports: 
+    flextable,
+    tidyr,
+    dplyr,
+    haven,
+    DBI,
+    RSQLite,
+    odbc,
+    readxl,
+    stats,
+    usethis
