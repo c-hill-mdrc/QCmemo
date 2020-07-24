@@ -61,23 +61,31 @@ makeQCLog <- function(rootdir, rawprg, rawdat, s1prg, s1dat, s2prg, s2dat, s2mac
 
   nrawdat <- length(rawdat)
   ns1dat <- length(s1dat)
-  ns2dat <- length(s2dat)
-  total_rows <- nrawdat + ns1dat + ns2dat + 4
 
-  tabl2 <- data.frame(Stage = c(rep('Raw Step', 1 + nrawdat),
-                                rep('Step 1', 1 + ns1dat),
-                                rep('Step 2', 1 + ns2dat + 1)),
-                      Type  = c('Program', rep('Dataset', nrawdat),
-                                'Program', rep('Dataset', ns1dat),
-                                'Program', rep('Dataset', ns2dat), 'Macro'),
-                      File  = c(rawprg, rawdat,
-                                s1prg, s1dat,
-                                s2prg, s2dat, s2mac),
-                      Programmer = c(rep(prgmer_raw, 1 + nrawdat),
-                                     rep(prgmer_s1, 1 + ns1dat),
-                                     rep(prgmer_s2, 1 + ns2dat + 1)),
-                      Reviewers = rep(reviewers, total_rows),
-                      Date = rep(QC_date, total_rows))
+  if (!is.null(s2dat)) {
+    ns2dat <- length(s2dat)
+    total_rows <- nrawdat + ns1dat + ns2dat + 4
+  }
+  else {
+    total_rows <- nrawdat + ns1dat + 2
+  }
+
+  if (!is.null(s2dat)) {
+    tabl2 <- data.frame(Stage = c(rep('Raw Step', 1 + nrawdat),
+                                  rep('Step 1', 1 + ns1dat),
+                                  rep('Step 2', 1 + ns2dat + 1)),
+                        Type  = c('Program', rep('Dataset', nrawdat),
+                                  'Program', rep('Dataset', ns1dat),
+                                  'Program', rep('Dataset', ns2dat), 'Macro'),
+                        File  = c(rawprg, rawdat,
+                                  s1prg, s1dat,
+                                  s2prg, s2dat, s2mac),
+                        Programmer = c(rep(prgmer_raw, 1 + nrawdat),
+                                       rep(prgmer_s1, 1 + ns1dat),
+                                       rep(prgmer_s2, 1 + ns2dat + 1)),
+                        Reviewers = rep(reviewers, total_rows),
+                        Date = rep(QC_date, total_rows))
+  }
 
   qclog_ft <- flextable(data = tabl2) %>%
     merge_v(j = c('Stage', 'Type', 'File', 'Programmer', 'Reviewers', 'Date')) %>%
