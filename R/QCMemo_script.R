@@ -86,6 +86,18 @@ makeQCLog <- function(rootdir, rawprg, rawdat, s1prg, s1dat, s2prg, s2dat, s2mac
                         Reviewers = rep(reviewers, total_rows),
                         Date = rep(QC_date, total_rows))
   }
+  else {
+    tabl2 <- data.frame(Stage = c(rep('Raw Step', 1 + nrawdat),
+                                  rep('Step 1', 1 + ns1dat)),
+                        Type  = c('Program', rep('Dataset', nrawdat),
+                                  'Program', rep('Dataset', ns1dat)),
+                        File  = c(rawprg, rawdat,
+                                  s1prg, s1dat),
+                        Programmer = c(rep(prgmer_raw, 1 + nrawdat),
+                                       rep(prgmer_s1, 1 + ns1dat)),
+                        Reviewers = rep(reviewers, total_rows),
+                        Date = rep(QC_date, total_rows))
+  }
 
   qclog_ft <- flextable(data = tabl2) %>%
     merge_v(j = c('Stage', 'Type', 'File', 'Programmer', 'Reviewers', 'Date')) %>%
